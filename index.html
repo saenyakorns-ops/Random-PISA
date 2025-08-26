@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจับคู่นักเรียน - Redirect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #6a11cb;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        }
+        .countdown {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #6a11cb;
+        }
+        .url-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            color: #495057;
+            border-left: 4px solid #6a11cb;
+        }
+        .instructions {
+            text-align: left;
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #6a11cb;
+            margin-bottom: 15px;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        footer {
+            margin-top: 30px;
+            color: white;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-users"></i>
+        </div>
+        <h1>ระบบจับคู่นักเรียน</h1>
+        <p>กำลังนำทางไปยังแอปพลิเคชันจับคู่นักเรียน</p>
+        
+        <div class="countdown" id="countdown">กำลังเปลี่ยนเส้นทางใน: 10 วินาที</div>
+        
+        <div class="url-display">
+            URL ปัจจุบัน: <span id="current-url">กำลังโหลด...</span>
+        </div>
+        
+        <a href="#" class="btn" id="redirect-btn">ไปยังแอปพลิเคชัน</a>
+        <a href="#" class="btn btn-secondary" id="update-btn">อัปเดต URL</a>
+        
+        <div class="instructions">
+            <h3>วิธีการตั้งค่า:</h3>
+            <ol>
+                <li>Deploy Google Apps Script ของคุณเป็น Web App</li>
+                <li>คัดลอก URL ที่ได้มา</li>
+                <li>คลิกปุ่ม "อัปเดต URL" ด้านบน</li>
+                <li>วาง URL ใหม่ในฟอร์มที่แสดงขึ้นมา</li>
+                <li>บันทึกการเปลี่ยนแปลง</li>
+            </ol>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2023 ระบบจับคู่นักเรียน - Powered by GitHub Pages
+    </footer>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countdownElement = document.getElementById('countdown');
+            const redirectBtn = document.getElementById('redirect-btn');
+            const updateBtn = document.getElementById('update-btn');
+            const currentUrlElement = document.getElementById('current-url');
+            
+            // ฟังก์ชันสำหรับอ่านค่า URL จาก localStorage
+            function getAppScriptUrl() {
+                const savedUrl = localStorage.getItem('appScriptUrl');
+                if (savedUrl) {
+                    return savedUrl;
+                }
+                
+                // ค่า default (ให้แทนที่ด้วย URL ของคุณ)
+                return 'https://script.google.com/a/macros/sueksa.go.th/s/AKfycbyHAEfh3yYF7EXU79DynORhZUfge8j3c3vgUX2W4oXLKJr0wb_rETeWvbUt-OuUOon2Lw/exec';
+            }
+            
+            // ฟังก์ชันสำหรับบันทึกค่า URL ใหม่
+            function setAppScriptUrl(newUrl) {
+                localStorage.setItem('appScriptUrl', newUrl);
+                currentUrlElement.textContent = newUrl;
+                return true;
+            }
+            
+            // ฟังก์ชันสำหรับเปลี่ยนเส้นทาง
+            function redirectToApp() {
+                const url = getAppScriptUrl();
+                window.location.href = url;
+            }
+            
+            // ฟังก์ชันสำหรับอัปเดต URL
+            function updateAppScriptUrl() {
+                const newUrl = prompt('กรุณาใส่ URL ใหม่ของ Google Apps Script:');
+                if (newUrl && newUrl.trim() !== '') {
+                    if (setAppScriptUrl(newUrl.trim())) {
+                        alert('อัปเดต URL เรียบร้อยแล้ว!');
+                        // รีเซ็ตการนับถอยหลัง
+                        clearInterval(countdownInterval);
+                        startCountdown();
+                    }
+                }
+            }
+            
+            // เริ่มนับถอยหลัง
+            let seconds = 10;
+            let countdownInterval;
+            
+            function startCountdown() {
+                seconds = 10;
+                updateCountdown();
+                
+                countdownInterval = setInterval(function() {
+                    seconds--;
+                    updateCountdown();
+                    
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        redirectToApp();
+                    }
+                }, 1000);
+            }
+            
+            function updateCountdown() {
+                countdownElement.textContent = `กำลังเปลี่ยนเส้นทางใน: ${seconds} วินาที`;
+            }
+            
+            // ตั้งค่าเริ่มต้น
+            currentUrlElement.textContent = getAppScriptUrl();
+            
+            // เพิ่ม event listeners
+            redirectBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                redirectToApp();
+            });
+            
+            updateBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                updateAppScriptUrl();
+            });
+            
+            // เริ่มนับถอยหลัง
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
